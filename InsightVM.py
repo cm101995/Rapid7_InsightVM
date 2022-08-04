@@ -100,13 +100,13 @@ if __name__ == '__main__':
     # Reference: https://nexpose.help.rapid7.com/docs/understanding-the-reporting-data-model-overview-and-query-design
     QUERIES = {
         "vulnerabilities": """
-            SELECT dvr.reference, da.ip_address, da.host_name, da.mac_address, dv.title, dim.operating_system, round(dv.riskscore::numeric, 0) AS risk
+            SELECT dvr.reference, asset_id, da.ip_address, da.host_name, da.mac_address, round(dv.riskscore::numeric, 0) AS risk
             FROM fact_asset_vulnerability_finding favf 
-               JOIN dim_operating_system dos dos USING (operating_system_id) 
+               JOIN dim_asset da USING (asset_id) 
                JOIN dim_vulnerability dv USING (vulnerability_id) 
                JOIN dim_vulnerability_reference dvr using (vulnerability_id) 
-            WHERE dim.operating_system like '%Linux%'
-            ORDER BY dim.operating_system
+            WHERE dvr.reference in ('CVE-2022-30190')
+            ORDER BY da.ip_address ASC, dv.title ASC
         """
     }
 
